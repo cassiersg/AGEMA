@@ -32,8 +32,6 @@ CXX_DEBUG_FLAGS		:= -Wall -Wextra -pedantic -m64 -march=native -g3 -Og -fsanitiz
 LD_RELEASE_FLAGS	:= -m64
 LD_DEBUG_FLAGS		:= -m64 -fsanitize=address
 
-# EXTERNAL INCLUDES
-INCLUDES			:= "/mnt/c/boost_1_73_0"
 
 # LIBRARIES
 LIBRARIES			:= -labc -lcudd -lsylvan
@@ -75,6 +73,7 @@ else
 	CXX_FLAGS 	= $(CXX_RELEASE_FLAGS)
 	LD_FLAGS 	= $(LD_RELEASE_FLAGS)
 endif
+LD_FLAGS += -Wl,-rpath=$(shell pwd)/lib
 
 # list all .c and .cpp source files
 C_SOURCES	:= $(shell find $(SOURCE_DIR) -name '*.c' | sort -k 1nr | cut -f2-)
@@ -135,18 +134,18 @@ endif
 # compile .c files
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.c Makefile
 	@mkdir -p '$(dir $@)'
-	$(SUPPRESS)$(CC) -c $< -o $@ $(DEPENDENCYFLAGS) $(C_FLAGS) -I $(INCLUDE_DIR) -I $(INCLUDES) -I $(CUDD_DIR1) -I $(CUDD_DIR2)
+	$(SUPPRESS)$(CC) -c $< -o $@ $(DEPENDENCYFLAGS) $(C_FLAGS) -I $(INCLUDE_DIR) -I $(CUDD_DIR1) -I $(CUDD_DIR2)
 	@touch $@
 
 # compile .cpp files
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp Makefile
 	@mkdir -p '$(dir $@)'
-	$(SUPPRESS)$(CXX) -c $< -o $@ $(DEPENDENCYFLAGS) $(CXX_FLAGS) -I $(INCLUDE_DIR) -I $(INCLUDES) -I $(CUDD_DIR1) -I $(CUDD_DIR2) -L$(LIBRARY_DIR) $(LIBRARIES) 
+	$(SUPPRESS)$(CXX) -c $< -o $@ $(DEPENDENCYFLAGS) $(CXX_FLAGS) -I $(INCLUDE_DIR) -I $(CUDD_DIR1) -I $(CUDD_DIR2) -L$(LIBRARY_DIR) $(LIBRARIES) 
 	@touch $@
 
 # link target
 $(TARGET_DIR)/$(TARGET) : $(OBJECTS)
-	$(SUPPRESS)$(LINK) -o $(TARGET_DIR)/$(TARGET) $(OBJECTS) $(LD_FLAGS) -I $(INCLUDE_DIR) -I $(INCLUDES) -I $(CUDD_DIR1) -I $(CUDD_DIR2) -L$(LIBRARY_DIR) $(LIBRARIES)
+	$(SUPPRESS)$(LINK) -o $(TARGET_DIR)/$(TARGET) $(OBJECTS) $(LD_FLAGS) -I $(INCLUDE_DIR) -I $(CUDD_DIR1) -I $(CUDD_DIR2) -L$(LIBRARY_DIR) $(LIBRARIES)
 
 #Pull in dependency info for *existing* .o files
 -include $(OBJECTS:.o=.d)

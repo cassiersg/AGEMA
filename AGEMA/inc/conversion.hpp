@@ -30,12 +30,12 @@
 #include <boost/multiprecision/cpp_int.hpp>
 
 /* Setup CUDD library */
-#include "cudd.h"
-#include "cuddObj.hh"
+#include "cudd/cudd.h"
+#include "cudd/cuddObj.hh"
 
 /* Setup SYLVAN library */
-#include "sylvan.h"
-#include "sylvan_obj.hpp"
+#include "sylvan/sylvan.h"
+#include "sylvan/sylvan_obj.hpp"
 
 /* Setup AIG library */
 #define LIN64
